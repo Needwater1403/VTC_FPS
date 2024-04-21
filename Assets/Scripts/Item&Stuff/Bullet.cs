@@ -33,7 +33,6 @@ public class Bullet : MonoBehaviour
     private void Blink(Component other)
     {
         var controlAnimator = other.GetComponent<CharacterControlAnimator>();
-        StartCoroutine(controlAnimator.MaterialBlink());
     }
 
     IEnumerator DetroyBullet()

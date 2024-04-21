@@ -10,7 +10,6 @@ public class SpawnState : AIState
         if (!aiCharacterManager.isSpawn)
         {
             aiCharacterManager.isSpawn = true;
-            aiCharacterManager._controlAnimator.SpawnEffect();
         }
         aiCharacterManager.spawnTimer += Time.deltaTime;
         if (aiCharacterManager.spawnTimer >= aiCharacterManager.spawnDuration)
