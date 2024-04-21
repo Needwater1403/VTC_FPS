@@ -12,7 +12,13 @@ public enum SettingType
 public class PlayerSettingConfig : ScriptableObject
 {
     [Title("Camera Setting")]
-    public float CameraHorizontalSpeed;
-    public float CameraVerticalSpeed;
+    public float ViewXSensitivity;
+    public float ViewYSensitivity;
     public float CameraSensitivityMultiplier;
+    public float MinViewX;
+    public float MaxViewX;
+    public float CamStandHeight;
+    public float CamCrouchHeight;
+    public float CamProneHeight;
+    public float playerStanceSmoothing;
 }   

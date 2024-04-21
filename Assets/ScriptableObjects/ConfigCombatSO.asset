@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f8f5f56cfbd55146a4f31895cf75bd6, type: 3}
-  m_Name: ConfigMovementSO
+  m_Script: {fileID: 11500000, guid: 08c46c72ef5cef24eac3d8be2e499a3f, type: 3}
+  m_Name: ConfigCombatSO
   m_EditorClassIdentifier: 
-  walkFowardSpeed: 4
-  walkBackwardSpeed: 2
-  walkStrafeSpeed: 3
-  sprintSpeed: 0
-  jumpForce: 3
-  jumpSpeed: 7
-  jumpCooldown: 1.25
+  targetTag: Enemy
+  maxHP: 100
+  normalATK: 10

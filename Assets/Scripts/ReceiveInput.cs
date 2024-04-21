@@ -16,13 +16,13 @@ public class ReceiveInput : MonoBehaviour
     public bool ShootInputValue => shootInputValue;
     public float MoveAmount => moveAmount;
     
-    private Vector2 movementInputValue;
+    public Vector2 movementInputValue;
     private  Vector2 lookInputValue;
     private bool jumpInputValue;
     private bool sprintInputValue;
     private bool aimInputValue;
     private bool shootInputValue;
-    private float moveAmount;
+    public float moveAmount;
     
     private void Awake()
     {

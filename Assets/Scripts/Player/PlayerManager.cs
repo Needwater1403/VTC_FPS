@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class PlayerManager : CharacterManager
 {
-    [HideInInspector] public ControlMovement _controlMovement;
-    [HideInInspector] public ControlAnimator _controlAnimator;
+    [Title("References")]
+    public ControlMovement _controlMovement;
+    public ControlAnimator _controlAnimator;
     [SerializeField] private Health health;
     public Health Health => health;
+    
+    [Title("Camera")]
+    public Transform camHolder;
+    
     private float coinNum = 0;
     public float CoinNum => coinNum;
     private bool isDead;
     public bool IsDead => isDead;
 
-    [Title("References")]
-    [SerializeField] private Transform camHolder;
+    
     protected override void Awake()
     {
         base.Awake();
@@ -29,14 +33,12 @@ public class PlayerManager : CharacterManager
         if (_controlCombat.health.CurrentHp <= 0)
         {
             isDead = true;
-            _controlAnimator.isDead = true;
+            //_controlAnimator.isDead = true;
         }
-        if (_controlAnimator)
-        {
-            _controlAnimator.HandleAllAnimation(isPaused);
-        }
-
-        if (isPaused) return;
+        // if (_controlAnimator)
+        // {
+        //     _controlAnimator.HandleAllAnimation(isPaused);
+        // }
         if (_controlMovement)
         {
             _controlMovement.HandleAllMovement();
