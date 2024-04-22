@@ -17,8 +17,10 @@ public class PlayerManager : CharacterManager
     
     [Title("Player")]
     public Constants.PlayerStance playerStance;
-    [SerializeField] private CapsuleCollider standCollider;
-    [SerializeField] private CapsuleCollider crouchCollider;
+    public CapsuleCollider standCollider;
+    public CapsuleCollider crouchCollider;
+    public Transform bottomTF;
+    public LayerMask playerMask;
     private float capsuleHeightVelocity;
     private Vector3 capsuleCenterVelocity;
     private float coinNum = 0;
@@ -76,6 +78,7 @@ public class PlayerManager : CharacterManager
         {
             case Constants.PlayerStance.Standing:
             {
+                if (_controlMovement.CheckHeight(standCollider.height)) return;
                 _characterController.height = Mathf.SmoothDamp(_characterController.height, standCollider.height,
                     ref capsuleHeightVelocity, ConfigCenter.Instance.GetPlayerSetting().playerStanceSmoothing);
                 _characterController.center = Vector3.SmoothDamp(_characterController.center, standCollider.center,

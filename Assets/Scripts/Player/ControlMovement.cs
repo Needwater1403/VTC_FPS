@@ -25,6 +25,10 @@ public class ControlMovement : CharacterControlMovement
     private float lastJumpTime;
     private float camHeight;
     private float camHeightVelocity;
+    private float errorMargin = 0.05f;
+    private Vector3 newMoveDirVelocity;
+    private float a;
+    private float b;
     
     private ConfigMovementSO configMovement => ConfigCenter.Instance.GetConfigMovement();
     private PlayerSettingConfig playerConfig => ConfigCenter.Instance.GetPlayerSetting();
@@ -39,14 +43,17 @@ public class ControlMovement : CharacterControlMovement
         camHeight = GameManager.Instance.Player.camHolder.position.y;
         camRotation = GameManager.Instance.Player.camHolder.localRotation.eulerAngles;
         rotationDir = GameManager.Instance.Player.transform.localRotation.eulerAngles;
+        a = configMovement.walkFowardSpeed;
     }
-    
+
+    public bool test;
     public void HandleAllMovement() //MOVEMENT BASE ON CAMERA PERSPECTIVE
     {
         HandleGroundMovement();
         HandleCameraView();
         HandleJump();
         HandleCameraHeight();
+        test = CheckHeight(GameManager.Instance.Player.standCollider.height);
     }
 
     
@@ -58,8 +65,11 @@ public class ControlMovement : CharacterControlMovement
             case Constants.PlayerStance.Standing:
             {
                 var transform1 = GameManager.Instance.Player.camHolder.transform;
+                // WALK <=> SPRINT
+                a = ReceiveInput.Instance.SprintInputValue ? Mathf.SmoothDamp(a, configMovement.sprintSpeed, ref b, .7f) 
+                                                        : Mathf.SmoothDamp(a, configMovement.walkFowardSpeed, ref b, .7f);
                 moveDir = transform1.forward * (ReceiveInput.Instance.MovementInputValue.y * (ReceiveInput.Instance.MovementInputValue.y > 0? 
-                    (ReceiveInput.Instance.SprintInputValue? configMovement.sprintSpeed : configMovement.walkFowardSpeed)  : configMovement.walkBackwardSpeed) * Time.deltaTime);
+                    a : configMovement.walkBackwardSpeed) * Time.deltaTime);
                 moveDir += transform1.right *  (ReceiveInput.Instance.MovementInputValue.x * configMovement.walkStrafeSpeed * Time.deltaTime);
                 moveDir.y = 0;
                 jumpSpeed = configMovement.jumpSpeed;
@@ -124,11 +134,22 @@ public class ControlMovement : CharacterControlMovement
 
     private void HandleCameraHeight()
     {
-        var targetHeight = ReceiveInput.Instance.CrouchInputValue ? playerConfig.CamCrouchHeight : playerConfig.CamStandHeight;
+        var targetHeight = ReceiveInput.Instance.CrouchInputValue || CheckHeight(GameManager.Instance.Player.standCollider.height) ? 
+                                playerConfig.CamCrouchHeight : playerConfig.CamStandHeight;
         var localPosition = GameManager.Instance.Player.camHolder.localPosition;
         camHeight = Mathf.SmoothDamp(localPosition.y, targetHeight, ref camHeightVelocity,
                                     playerConfig.playerStanceSmoothing);
         localPosition = new Vector3(localPosition.x, camHeight, localPosition.z);
         GameManager.Instance.Player.camHolder.localPosition = localPosition;
+    }
+
+    public bool CheckHeight(float _checkHeight)
+    {
+        // CHECK IF CHARACTER CAN STAND OR NOT
+        var position = GameManager.Instance.Player.bottomTF.position;
+        var radius = GameManager.Instance.Player._characterController.radius;
+        var startPos = new Vector3(position.x, position.y + radius + errorMargin, position.z);
+        var endPos = new Vector3(position.x, position.y - radius - errorMargin + _checkHeight, position.z);
+        return Physics.CheckCapsule(startPos, endPos, radius, GameManager.Instance.Player.playerMask);
     }
 }
