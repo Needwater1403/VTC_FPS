@@ -27,8 +27,8 @@ public class ControlMovement : CharacterControlMovement
     private float camHeightVelocity;
     private float errorMargin = 0.05f;
     private Vector3 newMoveDirVelocity;
-    private float a;
-    private float b;
+    private float currentMoveSpeed;
+    private float moveVelocity;
     
     private ConfigMovementSO configMovement => ConfigCenter.Instance.GetConfigMovement();
     private PlayerSettingConfig playerConfig => ConfigCenter.Instance.GetPlayerSetting();
@@ -43,7 +43,7 @@ public class ControlMovement : CharacterControlMovement
         camHeight = GameManager.Instance.Player.camHolder.position.y;
         camRotation = GameManager.Instance.Player.camHolder.localRotation.eulerAngles;
         rotationDir = GameManager.Instance.Player.transform.localRotation.eulerAngles;
-        a = configMovement.walkFowardSpeed;
+        currentMoveSpeed = configMovement.walkFowardSpeed;
     }
 
     public bool test;
@@ -66,10 +66,10 @@ public class ControlMovement : CharacterControlMovement
             {
                 var transform1 = GameManager.Instance.Player.camHolder.transform;
                 // WALK <=> SPRINT
-                a = ReceiveInput.Instance.SprintInputValue ? Mathf.SmoothDamp(a, configMovement.sprintSpeed, ref b, .7f) 
-                                                        : Mathf.SmoothDamp(a, configMovement.walkFowardSpeed, ref b, .7f);
+                currentMoveSpeed = ReceiveInput.Instance.SprintInputValue ? Mathf.SmoothDamp(currentMoveSpeed, configMovement.sprintSpeed, ref moveVelocity, .7f) 
+                                                        : Mathf.SmoothDamp(currentMoveSpeed, configMovement.walkFowardSpeed, ref moveVelocity, .7f);
                 moveDir = transform1.forward * (ReceiveInput.Instance.MovementInputValue.y * (ReceiveInput.Instance.MovementInputValue.y > 0? 
-                    a : configMovement.walkBackwardSpeed) * Time.deltaTime);
+                    currentMoveSpeed : configMovement.walkBackwardSpeed) * Time.deltaTime);
                 moveDir += transform1.right *  (ReceiveInput.Instance.MovementInputValue.x * configMovement.walkStrafeSpeed * Time.deltaTime);
                 moveDir.y = 0;
                 jumpSpeed = configMovement.jumpSpeed;
