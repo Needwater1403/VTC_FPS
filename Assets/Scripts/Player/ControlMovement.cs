@@ -21,11 +21,11 @@ public class ControlMovement : CharacterControlMovement
     private float targetMoveDirY;
     private bool expectGrounded;
     private bool lockInJump;
+    private float jumpSpeed;
     private float lastJumpTime;
     private float camHeight;
     private float camHeightVelocity;
     
-    public Constants.PlayerStance playerStance;
     public ConfigMovementSO configMovement;
     public PlayerSettingConfig playerConfig;
     protected override void Awake()
@@ -53,11 +53,29 @@ public class ControlMovement : CharacterControlMovement
     private void HandleGroundMovement()
     {
         //------------HANDLE MOVEMENT------------
-        var transform1 = GameManager.Instance.Player.camHolder.transform;
-        moveDir = transform1.forward * (ReceiveInput.Instance.MovementInputValue.y * (ReceiveInput.Instance.MovementInputValue.y > 0? 
-                                                configMovement.walkFowardSpeed : configMovement.walkBackwardSpeed) * Time.deltaTime);
-        moveDir += transform1.right *  (ReceiveInput.Instance.MovementInputValue.x * configMovement.walkStrafeSpeed * Time.deltaTime);
-        moveDir.y = 0;
+        switch (GameManager.Instance.Player.playerStance)
+        {
+            case Constants.PlayerStance.Standing:
+            {
+                var transform1 = GameManager.Instance.Player.camHolder.transform;
+                moveDir = transform1.forward * (ReceiveInput.Instance.MovementInputValue.y * (ReceiveInput.Instance.MovementInputValue.y > 0? 
+                    (ReceiveInput.Instance.SprintInputValue? configMovement.sprintSpeed : configMovement.walkFowardSpeed)  : configMovement.walkBackwardSpeed) * Time.deltaTime);
+                moveDir += transform1.right *  (ReceiveInput.Instance.MovementInputValue.x * configMovement.walkStrafeSpeed * Time.deltaTime);
+                moveDir.y = 0;
+                jumpSpeed = configMovement.jumpSpeed;
+                break;
+            }
+            case Constants.PlayerStance.Crouching:
+            {
+                var transform1 = GameManager.Instance.Player.camHolder.transform;
+                moveDir = transform1.forward * (ReceiveInput.Instance.MovementInputValue.y * (ReceiveInput.Instance.MovementInputValue.y > 0? 
+                    configMovement.crouchFowardSpeed : configMovement.crouchBackwardSpeed) * Time.deltaTime);
+                moveDir += transform1.right *  (ReceiveInput.Instance.MovementInputValue.x * configMovement.crouchStrafeSpeed * Time.deltaTime);
+                moveDir.y = 0;
+                jumpSpeed = configMovement.jumpSpeed * 3/5;
+                break;
+            }
+        }
         
         //------------HANDLE GRAVITY------------
         if (!GameManager.Instance.Player._characterController.isGrounded)
@@ -77,7 +95,7 @@ public class ControlMovement : CharacterControlMovement
                 lockInJump = false;
             }
         }
-        moveDir.y = Mathf.Lerp(moveDir.y, targetMoveDirY, configMovement.jumpSpeed * Time.deltaTime);
+        moveDir.y = Mathf.Lerp(moveDir.y, targetMoveDirY, jumpSpeed * Time.deltaTime);
         GameManager.Instance.Player._characterController.Move(moveDir);
     }
     private void HandleCameraView()
@@ -92,7 +110,6 @@ public class ControlMovement : CharacterControlMovement
     private void HandleJump()
     {
         if(Time.realtimeSinceStartup - lastJumpTime < configMovement.jumpCooldown) return;
-        
         var _jump = ReceiveInput.Instance.JumpInputValue;
         if (!_jump) return;
         OnJump();
@@ -107,8 +124,9 @@ public class ControlMovement : CharacterControlMovement
 
     private void HandleCameraHeight()
     {
+        var targetHeight = ReceiveInput.Instance.CrouchInputValue ? playerConfig.CamCrouchHeight : playerConfig.CamStandHeight;
         var localPosition = GameManager.Instance.Player.camHolder.localPosition;
-        camHeight = Mathf.SmoothDamp(localPosition.y, playerConfig.CamStandHeight, ref camHeightVelocity,
+        camHeight = Mathf.SmoothDamp(localPosition.y, targetHeight, ref camHeightVelocity,
                                     playerConfig.playerStanceSmoothing);
         localPosition = new Vector3(localPosition.x, camHeight, localPosition.z);
         GameManager.Instance.Player.camHolder.localPosition = localPosition;

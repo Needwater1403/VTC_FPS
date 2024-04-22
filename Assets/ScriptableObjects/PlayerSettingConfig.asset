@@ -20,4 +20,4 @@ MonoBehaviour:
   CamStandHeight: 0.7
   CamCrouchHeight: 0
   CamProneHeight: -0.57
-  playerStanceSmoothing: 0.6
+  playerStanceSmoothing: 0.3

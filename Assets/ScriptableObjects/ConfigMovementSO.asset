@@ -15,7 +15,10 @@ MonoBehaviour:
   walkFowardSpeed: 4
   walkBackwardSpeed: 2
   walkStrafeSpeed: 3
-  sprintSpeed: 0
+  sprintSpeed: 8
+  crouchFowardSpeed: 2.5
+  crouchBackwardSpeed: 2
+  crouchStrafeSpeed: 2.3
   jumpForce: 3
   jumpSpeed: 7
   jumpCooldown: 1.25

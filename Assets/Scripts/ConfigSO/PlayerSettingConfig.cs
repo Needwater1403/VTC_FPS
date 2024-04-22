@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public enum SettingType
-{
-    CameraSensitivity,
-}
-
 [CreateAssetMenu(fileName = "PlayerSettingConfig", menuName = "Config/Player Setting")]
 public class PlayerSettingConfig : ScriptableObject
 {

@@ -14,6 +14,7 @@ public class ReceiveInput : MonoBehaviour
     public bool SprintInputValue => sprintInputValue;
     public bool AimInputValue => aimInputValue;
     public bool ShootInputValue => shootInputValue;
+    public bool CrouchInputValue => crouchInputValue;
     public float MoveAmount => moveAmount;
     
     public Vector2 movementInputValue;
@@ -22,6 +23,7 @@ public class ReceiveInput : MonoBehaviour
     private bool sprintInputValue;
     private bool aimInputValue;
     private bool shootInputValue;
+    private bool crouchInputValue;
     public float moveAmount;
     
     private void Awake()
@@ -103,6 +105,19 @@ public class ReceiveInput : MonoBehaviour
                 break;
             case InputActionPhase.Canceled:
                 shootInputValue = false;
+                break;
+        }
+    }
+    
+    public void OnCrouch(InputAction.CallbackContext _context)
+    {
+        switch (_context.phase)
+        {
+            case InputActionPhase.Performed:
+                crouchInputValue = true;
+                break;
+            case InputActionPhase.Canceled:
+                crouchInputValue = false;
                 break;
         }
     }
