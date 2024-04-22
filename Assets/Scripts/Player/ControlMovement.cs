@@ -26,8 +26,8 @@ public class ControlMovement : CharacterControlMovement
     private float camHeight;
     private float camHeightVelocity;
     
-    public ConfigMovementSO configMovement;
-    public PlayerSettingConfig playerConfig;
+    private ConfigMovementSO configMovement => ConfigCenter.Instance.GetConfigMovement();
+    private PlayerSettingConfig playerConfig => ConfigCenter.Instance.GetPlayerSetting();
     protected override void Awake()
     {
         base.Awake();

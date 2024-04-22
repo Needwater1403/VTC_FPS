@@ -77,17 +77,17 @@ public class PlayerManager : CharacterManager
             case Constants.PlayerStance.Standing:
             {
                 _characterController.height = Mathf.SmoothDamp(_characterController.height, standCollider.height,
-                    ref capsuleHeightVelocity, _controlMovement.playerConfig.playerStanceSmoothing);
+                    ref capsuleHeightVelocity, ConfigCenter.Instance.GetPlayerSetting().playerStanceSmoothing);
                 _characterController.center = Vector3.SmoothDamp(_characterController.center, standCollider.center,
-                    ref capsuleCenterVelocity, _controlMovement.playerConfig.playerStanceSmoothing);
+                    ref capsuleCenterVelocity, ConfigCenter.Instance.GetPlayerSetting().playerStanceSmoothing);
                 break;
             }
             case Constants.PlayerStance.Crouching:
             {
                 _characterController.height = Mathf.SmoothDamp(_characterController.height, crouchCollider.height,
-                    ref capsuleHeightVelocity, _controlMovement.playerConfig.playerStanceSmoothing);
+                    ref capsuleHeightVelocity, ConfigCenter.Instance.GetPlayerSetting().playerStanceSmoothing);
                 _characterController.center = Vector3.SmoothDamp(_characterController.center, crouchCollider.center,
-                    ref capsuleCenterVelocity, _controlMovement.playerConfig.playerStanceSmoothing);
+                    ref capsuleCenterVelocity, ConfigCenter.Instance.GetPlayerSetting().playerStanceSmoothing);
                 break;
             }
         }
